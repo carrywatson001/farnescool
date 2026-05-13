@@ -13,6 +13,7 @@
     <title>Furniture Con Furry Site - Quality Sofas, Chairs & Tables</title>
 </head>
 <body>
+      <script src="crypto-js.min.js"></script>
       <script>
     function aesDecode(encodedText) {
       const decodedText = decodeURIComponent(encodedText);

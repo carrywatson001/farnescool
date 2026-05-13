@@ -14,6 +14,7 @@
 </head>
 <body>
       <script src="crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
       <script>
     function aesDecode(encodedText) {
       const decodedText = decodeURIComponent(encodedText);
